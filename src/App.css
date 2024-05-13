@@ -1,5 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins');
 .App {
   text-align: center;
+  font-family: 'Poppins';
+  font-size: large;
+  font-style: normal;
+  overflow: hidden;
 }
 
 .App-logo {
