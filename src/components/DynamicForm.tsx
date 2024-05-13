@@ -29,11 +29,11 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                       </FieldLabel>
                       {item.type === dataTypes.TEXTFIELD ? (
                         <FieldLabel>
-                          <input></input>
+                          <input placeholder={item.placeholder}></input>
                         </FieldLabel>
                       ) : item.type === dataTypes.TEXTAREA ? (
                         <FieldLabel>
-                          <textarea></textarea>
+                          <textarea placeholder={item.placeholder}></textarea>
                         </FieldLabel>
                       ) : null}
                     </FieldWrapper>
@@ -44,7 +44,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
           )
       )}
 
-      {(Number(activeIndex) < 0 || Number(activeIndex) >= data.length ) && (
+      {(Number(activeIndex) < 0 || Number(activeIndex) >= data.length) && (
         <FormTitle className="message">
           Please start and complete the form for quick processing and disbursement of your loan
         </FormTitle>
@@ -63,8 +63,11 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
               {'>'}
             </button>
           </>
-        ) : <button className="save" onClick={()=> setActiveIndex(0)}>{activeIndex < 0 ?  'Start' : 'Go back'}</button>
-    }
+        ) : (
+          <button className="save" onClick={() => setActiveIndex(0)}>
+            {activeIndex < 0 ? 'Start' : 'Go back'}
+          </button>
+        )}
       </ButtonWrapper>
     </DynamicFormWrapper>
   );
@@ -76,6 +79,7 @@ const DynamicFormWrapper = styled.div`
   padding: 12px;
   border-radius: 8px;
   padding-bottom: 40px;
+  font-family: ${(props) => props.theme.fonts[0]};
 
   @media (max-width: 768px) {
     margin: 10px;
@@ -97,6 +101,14 @@ const ButtonWrapper = styled.div`
       padding: 8px 16px;
     }
   }
+
+  button:disabled {
+    background-color: #cccccc; /* Grey */
+    color: #666666; /* Darker grey text */
+    cursor: not-allowed; /* Change cursor to 'not-allowed' */
+    opacity: 0.6; /* Make the button slightly transparent */
+  }
+
   .save {
     color: ${({ theme: { colors } }) => colors.tertiary};
     background-color: ${({ theme: { colors } }) => colors.primary};
@@ -179,9 +191,11 @@ const FieldWrapper = styled.div`
 
   input {
     height: 24px;
+    font-family: ${(props) => props.theme.fonts[0]};
   }
 
   textarea {
     height: 60px;
+    font-family: ${(props) => props.theme.fonts[0]};
   }
 `;
