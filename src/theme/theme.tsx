@@ -31,10 +31,10 @@ const theme: ThemeInterface = {
   },
   fonts: ["Poppins"],
   fontSizes: {
-    small: "12px",
-    medium: "14px",
-    large: "18px",
-    extra : "22px"
+    small: "14px",
+    medium: "18px",
+    large: "22px",
+    extra : "26px"
   },
 };
 

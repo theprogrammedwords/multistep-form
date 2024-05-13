@@ -1,6 +1,8 @@
 import './App.css';
+import { DynamicForm } from './components/DynamicForm';
 import Theme from './theme/theme';
 import styled from 'styled-components';
+import { formData, sectionData } from './configs/formdata';
 
 function App() {
   return (
@@ -9,7 +11,9 @@ function App() {
         <Container>
           <Heading>Loan Form</Heading>
         </Container>
-        <Body></Body>
+        <Body>
+          <DynamicForm data={formData} />
+        </Body>
       </Theme>
     </div>
   );
