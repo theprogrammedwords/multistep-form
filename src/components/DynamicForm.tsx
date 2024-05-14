@@ -96,8 +96,6 @@ const DynamicFormWrapper = styled.div`
   font-family: ${(props) => props.theme.fonts[0]};
 
   @media (max-width: 768px) {
-    margin: 10px;
-    padding: 8px;
     padding-bottom: 40px;
   }
 `;
