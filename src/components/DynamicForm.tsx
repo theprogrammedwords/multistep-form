@@ -12,7 +12,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
 
 
   
-  const isDisabled = (): boolean => {
+  const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
     
     if (!currentData || !currentData.fields) {
@@ -22,6 +22,15 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     const result: boolean = currentData.fields.some((item) => !item.isFilled);
   
     return result;
+  };
+
+  const isNavigationDisabled = (type : string): boolean => {
+    if(type === 'prev'){
+        return activeIndex === 0 ? true : false
+    }else if(type === 'next'){
+        return activeIndex === data.length -1 ? true : false
+    }
+    return false
   };
   
   return (
@@ -68,12 +77,12 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         {activeIndex >= 0 && activeIndex < data.length ? (
           <>
             {' '}
-            <button className="navigation" onClick={() => setActiveIndex(activeIndex - 1)}>
+            <button disabled={isNavigationDisabled('prev')} className="navigation" onClick={() => setActiveIndex(activeIndex - 1)}>
               {'<'}
             </button>
-            <button disabled={isDisabled()} className="save">Save</button>
+            <button disabled={isSaveDisabled()} className="save">Save</button>
             <button className="reset">Reset</button>
-            <button className="navigation" onClick={() => setActiveIndex(activeIndex + 1)}>
+            <button disabled={isNavigationDisabled('next')} className="navigation" onClick={() => setActiveIndex(activeIndex + 1)}>
               {'>'}
             </button>
           </>
@@ -97,6 +106,7 @@ const DynamicFormWrapper = styled.div`
 
   @media (max-width: 768px) {
     padding-bottom: 40px;
+    margin: 8px;
   }
 `;
 

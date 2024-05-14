@@ -35,6 +35,11 @@ const Body = styled.div`
   background-color: ${(props) => props.theme.colors.quaternary};
   font-family: ${(props) => props.theme.fonts[0]};
   border-radius: 8px;
+
+  @media (max-width: 768px) {
+    margin: 10px 14px;
+    height : fit-content
+  }
 `;
 
 const Heading = styled.h1`
