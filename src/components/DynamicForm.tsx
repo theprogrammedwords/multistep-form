@@ -10,6 +10,20 @@ interface DynamicFormProps {
 export const DynamicForm = ({ data }: DynamicFormProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
+
+  
+  const isDisabled = (): boolean => {
+    const currentData: FormField | undefined = data[activeIndex];
+    
+    if (!currentData || !currentData.fields) {
+      return true; 
+    }
+  
+    const result: boolean = currentData.fields.some((item) => !item.isFilled);
+  
+    return result;
+  };
+  
   return (
     <DynamicFormWrapper>
       {Object.entries(data).map(
@@ -46,7 +60,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
 
       {(Number(activeIndex) < 0 || Number(activeIndex) >= data.length) && (
         <FormTitle className="message">
-          Please start and complete the form for quick processing and disbursement of your loan
+          Please complete the form for quick processing and disbursement of your loan
         </FormTitle>
       )}
 
@@ -57,7 +71,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
             <button className="navigation" onClick={() => setActiveIndex(activeIndex - 1)}>
               {'<'}
             </button>
-            <button className="save">Save</button>
+            <button disabled={isDisabled()} className="save">Save</button>
             <button className="reset">Reset</button>
             <button className="navigation" onClick={() => setActiveIndex(activeIndex + 1)}>
               {'>'}
@@ -84,6 +98,7 @@ const DynamicFormWrapper = styled.div`
   @media (max-width: 768px) {
     margin: 10px;
     padding: 8px;
+    padding-bottom: 40px;
   }
 `;
 
