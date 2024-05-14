@@ -1,3 +1,5 @@
+import { validationFunctions } from '../utils/validationUtils';
+
 export type SectionData = {
   key: string;
   label: string;
@@ -5,6 +7,7 @@ export type SectionData = {
 
 export type DataTypes = 'TEXTAREA' | 'TEXTFIELD' | 'DATE';
 
+type ValidationFunction = (value: string) => boolean;
 export interface FormField {
   label: string;
   key: string;
@@ -16,6 +19,7 @@ export interface Constraints {
   minLength?: number;
   allowedSpecialCharacters?: Array<string>;
   regex?: string;
+  validations?: ValidationFunction[];
 }
 export interface Field {
   order: number;
@@ -59,7 +63,7 @@ export const formData: FormField[] = [
       {
         order: 1,
         label: 'Name',
-        key: sectionData.PERSONAL.key + '_name',
+        key: sectionData.PERSONAL.key + '_NAME',
         type: dataTypes.TEXTFIELD,
         placeholder: 'Fill in the name of applicant',
         section: sectionData.PERSONAL.key,
@@ -67,13 +71,18 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 80,
           minLength: 4,
-          regex: ''
+          regex: '',
+          validations: [
+            (value: string) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 80),
+            (value) => validationFunctions.minLength(value, 4)
+          ]
         }
       },
       {
         order: 2,
         label: 'Address',
-        key: sectionData.PERSONAL.key + '_address',
+        key: sectionData.PERSONAL.key + '_ADDRESS',
         type: dataTypes.TEXTAREA,
         placeholder: 'Fill in the address of applicant',
         section: sectionData.PERSONAL.key,
@@ -81,13 +90,18 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 80,
           minLength: 10,
-          regex: ''
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 80),
+            (value) => validationFunctions.minLength(value, 10)
+          ]
         }
       },
       {
         order: 3,
         label: 'Email Id',
-        key: sectionData.PERSONAL.key + '_emailid',
+        key: sectionData.PERSONAL.key + '_EMAILID',
         placeholder: 'Fill in the email id of applicant',
         type: dataTypes.TEXTFIELD,
         section: sectionData.PERSONAL.key,
@@ -95,7 +109,12 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 80,
           minLength: 4,
-          regex: ''
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 80),
+            (value) => validationFunctions.minLength(value, 4)
+          ]
         }
       }
     ]
@@ -107,7 +126,7 @@ export const formData: FormField[] = [
       {
         order: 1,
         label: 'Name',
-        key: sectionData.BUSINESS.key + '_name',
+        key: sectionData.BUSINESS.key + '_NAME',
         placeholder: 'Fill in the name of business',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BUSINESS.key,
@@ -115,13 +134,18 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 80,
           minLength: 4,
-          regex: ''
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 80),
+            (value) => validationFunctions.minLength(value, 4)
+          ]
         }
       },
       {
         order: 2,
         label: 'Address',
-        key: sectionData.BUSINESS.key + '_address',
+        key: sectionData.BUSINESS.key + '_ADDRESS',
         placeholder: 'Fill in the address of business',
         type: dataTypes.TEXTAREA,
         section: sectionData.BUSINESS.key,
@@ -129,13 +153,18 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 80,
           minLength: 10,
-          regex: ''
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 80),
+            (value) => validationFunctions.minLength(value, 10)
+          ]
         }
       },
       {
         order: 3,
         label: 'Email Id',
-        key: sectionData.BUSINESS.key + '_emailid',
+        key: sectionData.BUSINESS.key + '_EMAILID',
         placeholder: 'Fill in the email id of business',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BUSINESS.key,
@@ -143,7 +172,12 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 80,
           minLength: 4,
-          regex: ''
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 80),
+            (value) => validationFunctions.minLength(value, 4)
+          ]
         }
       }
     ]
@@ -155,21 +189,26 @@ export const formData: FormField[] = [
       {
         order: 1,
         label: 'Account No',
-        key: sectionData.BANK.key + '_accountno',
+        key: sectionData.BANK.key + '_ACCOUNTNO',
         placeholder: 'Fill in the account number of bank',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BANK.key,
         mandatory: true,
         constraints: {
-          maxLength: 11,
-          minLength: 11,
-          regex: ''
+          maxLength: 13,
+          minLength: 10,
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 13),
+            (value) => validationFunctions.minLength(value, 10)
+          ]
         }
       },
       {
         order: 2,
         label: 'Bank Name',
-        key: sectionData.BANK.key + '_bankname',
+        key: sectionData.BANK.key + '_BANKNAME',
         placeholder: 'Fill in the name of bank',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BANK.key,
@@ -177,7 +216,12 @@ export const formData: FormField[] = [
         constraints: {
           maxLength: 40,
           minLength: 6,
-          regex: ''
+          regex: '',
+          validations: [
+            (value) => validationFunctions.isRequired(value),
+            (value) => validationFunctions.maxLength(value, 40),
+            (value) => validationFunctions.minLength(value, 6)
+          ]
         }
       }
     ]

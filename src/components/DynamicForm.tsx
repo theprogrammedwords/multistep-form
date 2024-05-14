@@ -2,14 +2,22 @@ import { FormField, SectionData } from '../configs/formdata';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { dataTypes } from '../configs/formdata';
+import { checkValues } from '../utils/validationUtils';
 
 interface DynamicFormProps {
   data: FormField[];
 }
 
+interface loanData {
+    sectionName : string,
+    id : string,
+    value : string
+}
+
+
 export const DynamicForm = ({ data }: DynamicFormProps) => {
-  
   const [activeIndex, setActiveIndex] = useState(-1);
+  const loanData: loanData[] = JSON.parse(localStorage.getItem('loanData') as string) as loanData[];
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -52,6 +60,28 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         return field;
       });
       setFormData(updatedFormData);
+  }
+
+  const handleSave = ()=> {
+    const formDataForStorage: loanData[] = loanData ? loanData : [];
+
+    formData?.map((item, index)=> {
+        const localData : loanData= {
+            sectionName : data[activeIndex].key,
+            id : item.key,
+            value : item.value
+        }
+        formDataForStorage?.push(localData)
+    }) 
+
+    const errors : any = [];
+    data?.forEach(section => {
+        const sectionFields = loanData?.filter(field => field.sectionName === section.key);
+        errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
+    });
+
+    console.log(errors)
+    localStorage.setItem('loanData', JSON.stringify(formDataForStorage))
   }
 
   useEffect(() => {
@@ -121,7 +151,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
               </button>
             )}
             {(
-              <button disabled={isSaveDisabled()} className="save">
+              <button disabled={isSaveDisabled()} onClick={()=> handleSave()} className="save">
                 Save
               </button>
             )}
