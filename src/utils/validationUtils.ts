@@ -8,21 +8,6 @@ export const validationFunctions = {
   regex: (value: string, pattern: string | RegExp) => new RegExp(pattern).test(value)
 };
 
-export const validateFormData = (formData: FormField[]) => {
-  let isValid = true;
-  formData.forEach((section: FormField) => {
-    section?.fields?.forEach((field) => {
-      field?.constraints?.validations?.forEach((validate) => {
-        if (!validate(field.value)) {
-          isValid = false;
-          console.error(`Validation failed for ${field.label}`);
-        }
-      });
-    });
-  });
-  return isValid;
-};
-
 type Validation = (value: any) => boolean | string;
 interface Field {
   id: string;
