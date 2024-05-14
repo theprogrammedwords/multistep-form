@@ -40,6 +40,21 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     return false;
   };
 
+  const handleFieldChange = (index: number , item : FormField, value : string)=> {
+    const updatedFormData = formData?.map((field, i) => {
+        if (i === index) {
+          return {
+            ...field,
+            value : value,
+            isFilled: value.trim().length > 0
+          };
+        }
+        return field;
+      });
+      setFormData(updatedFormData);
+  }
+
+  console.log(formData)
 
   useEffect(() => {
     if (activeIndex !== -1) {
@@ -71,10 +86,10 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                         <span style={{ color: item.mandatory ? 'red' : 'gray' }}>
                           {item.mandatory ? ' *' : '(Optional)'}
                         </span>
-                      </FieldLabel>
+                      </FieldLabel> 
                       {item.type === dataTypes.TEXTFIELD ? (
                         <FieldLabel>
-                          <input placeholder={item.placeholder}></input>
+                          <input onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></input>
                         </FieldLabel>
                       ) : item.type === dataTypes.TEXTAREA ? (
                         <FieldLabel>
