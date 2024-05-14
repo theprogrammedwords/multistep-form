@@ -11,6 +11,12 @@ export interface FormField {
   fields?: Field[];
 }
 
+export interface Constraints {
+  maxLength?: number;
+  minLength?: number;
+  allowedSpecialCharacters?: Array<string>;
+  regex?: string;
+}
 export interface Field {
   order: number;
   label: string;
@@ -21,6 +27,7 @@ export interface Field {
   placeholder: string;
   value?: null | undefined | any;
   isFilled?: boolean;
+  constraints?: Constraints;
 }
 
 export const sectionData: { [key: string]: SectionData } = {
@@ -56,7 +63,12 @@ export const formData: FormField[] = [
         type: dataTypes.TEXTFIELD,
         placeholder: 'Fill in the name of applicant',
         section: sectionData.PERSONAL.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 80,
+          minLength: 4,
+          regex: ''
+        }
       },
       {
         order: 2,
@@ -65,7 +77,12 @@ export const formData: FormField[] = [
         type: dataTypes.TEXTAREA,
         placeholder: 'Fill in the address of applicant',
         section: sectionData.PERSONAL.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 80,
+          minLength: 10,
+          regex: ''
+        }
       },
       {
         order: 3,
@@ -74,7 +91,12 @@ export const formData: FormField[] = [
         placeholder: 'Fill in the email id of applicant',
         type: dataTypes.TEXTFIELD,
         section: sectionData.PERSONAL.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 80,
+          minLength: 4,
+          regex: ''
+        }
       }
     ]
   },
@@ -89,7 +111,12 @@ export const formData: FormField[] = [
         placeholder: 'Fill in the name of business',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BUSINESS.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 80,
+          minLength: 4,
+          regex: ''
+        }
       },
       {
         order: 2,
@@ -98,7 +125,12 @@ export const formData: FormField[] = [
         placeholder: 'Fill in the address of business',
         type: dataTypes.TEXTAREA,
         section: sectionData.BUSINESS.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 80,
+          minLength: 10,
+          regex: ''
+        }
       },
       {
         order: 3,
@@ -107,7 +139,12 @@ export const formData: FormField[] = [
         placeholder: 'Fill in the email id of business',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BUSINESS.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 80,
+          minLength: 4,
+          regex: ''
+        }
       }
     ]
   },
@@ -122,7 +159,12 @@ export const formData: FormField[] = [
         placeholder: 'Fill in the account number of bank',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BANK.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 11,
+          minLength: 11,
+          regex: ''
+        }
       },
       {
         order: 2,
@@ -131,7 +173,12 @@ export const formData: FormField[] = [
         placeholder: 'Fill in the name of bank',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BANK.key,
-        mandatory: true
+        mandatory: true,
+        constraints: {
+          maxLength: 40,
+          minLength: 6,
+          regex: ''
+        }
       }
     ]
   }

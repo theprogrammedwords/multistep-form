@@ -54,8 +54,6 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       setFormData(updatedFormData);
   }
 
-  console.log(formData)
-
   useEffect(() => {
     if (activeIndex !== -1) {
       let activeConfigData = data[activeIndex]?.fields || [];
@@ -93,7 +91,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                         </FieldLabel>
                       ) : item.type === dataTypes.TEXTAREA ? (
                         <FieldLabel>
-                          <textarea placeholder={item.placeholder}></textarea>
+                          <textarea onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></textarea>
                         </FieldLabel>
                       ) : null}
                     </FieldWrapper>
@@ -270,10 +268,17 @@ const FieldWrapper = styled.div`
   input {
     height: 24px;
     font-family: ${(props) => props.theme.fonts[0]};
+    padding: 10px 20px;
+  }
+
+  textarea:focus, input:focus {
+    background-color: ${({ theme: { colors } }) => colors.tertiary};
+    outline-color: ${({ theme: { colors } }) => colors.primary};
   }
 
   textarea {
     height: 60px;
+    padding: 30px 0 0 20px;
     font-family: ${(props) => props.theme.fonts[0]};
   }
 `;
