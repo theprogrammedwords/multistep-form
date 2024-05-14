@@ -1,5 +1,5 @@
 import { FormField, SectionData } from '../configs/formdata';
-import { act, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { dataTypes } from '../configs/formdata';
 
@@ -39,6 +39,21 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     }
     return false;
   };
+
+
+  useEffect(() => {
+    if (activeIndex !== -1) {
+      let activeConfigData = data[activeIndex]?.fields || [];
+      activeConfigData = activeConfigData.map((item, index) => {
+        return {
+          ...item,
+          isFilled: false,
+          value: null
+        };
+      });
+      setFormData(activeConfigData);
+    }
+  }, [activeIndex, data]);
 
   return (
     <DynamicFormWrapper>
