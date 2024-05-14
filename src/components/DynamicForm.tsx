@@ -92,9 +92,14 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                 {'<'}
               </button>
             )}
-            {activeIndex === data.length - 1 && (
+            {(
               <button disabled={isSaveDisabled()} className="save">
-                Submit
+                Save
+              </button>
+            )}
+            {(
+              <button className="reset">
+                Reset
               </button>
             )}
             {(
