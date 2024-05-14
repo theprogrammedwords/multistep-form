@@ -18,6 +18,7 @@ export interface loanData {
 export const DynamicForm = ({ data }: DynamicFormProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const loanData: loanData[] = JSON.parse(localStorage.getItem('loanData') as string) as loanData[];
+  const [formLoanData, setFormLoanData] = useState<loanData[]>(loanData);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -37,6 +38,38 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     const result: boolean = currentData.fields.some((item, index) => item.mandatory && !formData?.[index]?.isFilled);
     return result;
   };
+
+
+  const handleSave = () => {
+    const formDataForStorage: loanData[] = loanData ? loanData : [];
+
+    formData?.forEach((item, index) => {
+        const localData: loanData = {
+            sectionName: data[activeIndex].key,
+            id: item.key,
+            value: item.value
+        };
+
+        const existingIndex = formDataForStorage.findIndex(
+            (dataItem) => dataItem.sectionName === localData.sectionName && dataItem.id === localData.id
+        );
+
+        if (existingIndex !== -1) {
+            formDataForStorage[existingIndex] = localData;
+        } else {
+            formDataForStorage.push(localData);
+        }
+    });
+
+    const errors: any = [];
+    data?.forEach((section) => {
+        const sectionFields = formDataForStorage?.filter((field) => field.sectionName === section.key);
+        errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
+    });
+
+    setActiveIndex(activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1);
+    localStorage.setItem('loanData', JSON.stringify(formDataForStorage));
+};
 
 
   const isNavigationDisabled = (type: string): boolean => {
@@ -62,27 +95,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       setFormData(updatedFormData);
   }
 
-  const handleSave = ()=> {
-    const formDataForStorage: loanData[] = loanData ? loanData : [];
-
-    formData?.map((item, index)=> {
-        const localData : loanData = {
-            sectionName : data[activeIndex].key,
-            id : item.key,
-            value : item.value
-        }
-        formDataForStorage?.push(localData)
-    }) 
-
-    const errors : any = [];
-    data?.forEach(section => {
-        const sectionFields = loanData?.filter(field => field.sectionName === section.key);
-        errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
-    });
-
-    setActiveIndex(activeIndex < data.length -1 ? activeIndex +1 : data.length -1)
-    localStorage.setItem('loanData', JSON.stringify(formDataForStorage));
-  }
+  
 
   useEffect(() => {
     if (activeIndex !== -1) {
@@ -171,7 +184,11 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
             )}{' '}
           </>
         ) : (
-          <button className="save" onClick={() => setActiveIndex(0)}>
+          <button className="save" onClick={() => {
+                setActiveIndex(0);
+                localStorage.clear();
+            }
+          }>
             {activeIndex < 0 ? 'Start' : 'Go back'}
           </button>
         )}
