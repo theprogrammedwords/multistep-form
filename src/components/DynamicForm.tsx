@@ -8,26 +8,38 @@ interface DynamicFormProps {
 }
 
 export const DynamicForm = ({ data }: DynamicFormProps) => {
+  
   const [activeIndex, setActiveIndex] = useState(-1);
+  let activeConfigData = data[activeIndex]?.fields;
+  activeConfigData = activeConfigData?.map((item, index) => {
+    return {
+      ...item,
+      isFilled: false,
+      value: null
+    };
+  });
+  const [formData, setFormData] = useState(activeConfigData);
 
   const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
     if (!currentData || !currentData.fields) {
-      return true; 
+      return true;
     }
-    const result: boolean = currentData.fields.some((item) => !item.isFilled && item.mandatory);
+
+    const result: boolean = currentData.fields.some((item, index) => item.mandatory && !formData?.[index]?.isFilled);
     return result;
   };
 
-  const isNavigationDisabled = (type : string): boolean => {
-    if(type === 'prev'){
-        return activeIndex === 0 ? true : false
-    }else if(type === 'next'){
-        return activeIndex === data.length -1 ? true : false
+
+  const isNavigationDisabled = (type: string): boolean => {
+    if (type === 'prev') {
+      return activeIndex === 0 ? true : false;
+    } else if (type === 'next') {
+      return activeIndex === data.length - 1 ? true : false;
     }
-    return false
+    return false;
   };
-  
+
   return (
     <DynamicFormWrapper>
       {Object.entries(data).map(
@@ -72,14 +84,27 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         {activeIndex >= 0 && activeIndex < data.length ? (
           <>
             {' '}
-            <button disabled={isNavigationDisabled('prev')} className="navigation" onClick={() => setActiveIndex(activeIndex - 1)}>
-              {'<'}
-            </button>
-            <button disabled={isSaveDisabled()} className="save">Save</button>
-            <button className="reset">Reset</button>
-            <button disabled={isNavigationDisabled('next')} className="navigation" onClick={() => setActiveIndex(activeIndex + 1)}>
-              {'>'}
-            </button>
+            {(
+              <button
+                disabled={isNavigationDisabled('prev')}
+                className="navigation"
+                onClick={() => setActiveIndex(activeIndex - 1)}>
+                {'<'}
+              </button>
+            )}
+            {activeIndex === data.length - 1 && (
+              <button disabled={isSaveDisabled()} className="save">
+                Submit
+              </button>
+            )}
+            {(
+              <button
+                disabled={isNavigationDisabled('next')}
+                className="navigation"
+                onClick={() => setActiveIndex(activeIndex + 1)}>
+                {'>'}
+              </button>
+            )}{' '}
           </>
         ) : (
           <button className="save" onClick={() => setActiveIndex(0)}>
@@ -121,11 +146,10 @@ const ButtonWrapper = styled.div`
   }
 
   button:disabled {
-    background-color: #cccccc; 
-    color: #666666; 
-    cursor: not-allowed; 
-    opacity: 0.6; 
-    
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   .save {
