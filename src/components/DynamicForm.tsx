@@ -1,14 +1,14 @@
-import { FormField, SectionData } from '../configs/formdata';
+import { FormField } from '../configs/formdata';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { dataTypes } from '../configs/formdata';
-import { checkValues } from '../utils/validationUtils';
+import { checkValues, getValueByKey } from '../utils/validationUtils';
+import { DynamicFormWrapper, FieldLabel, FieldWrapper, FormTitle, ButtonWrapper } from './DynamicFormStyles';
 
 interface DynamicFormProps {
   data: FormField[];
 }
 
-interface loanData {
+export interface loanData {
     sectionName : string,
     id : string,
     value : string
@@ -66,7 +66,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     const formDataForStorage: loanData[] = loanData ? loanData : [];
 
     formData?.map((item, index)=> {
-        const localData : loanData= {
+        const localData : loanData = {
             sectionName : data[activeIndex].key,
             id : item.key,
             value : item.value
@@ -80,6 +80,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
     });
 
+    setActiveIndex(activeIndex < data.length -1 ? activeIndex +1 : data.length -1)
     localStorage.setItem('loanData', JSON.stringify(formDataForStorage));
   }
 
@@ -96,6 +97,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       setFormData(activeConfigData);
     }
   }, [activeIndex, data]);
+
 
   return (
     <DynamicFormWrapper>
@@ -116,11 +118,11 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                       </FieldLabel> 
                       {item.type === dataTypes.TEXTFIELD ? (
                         <FieldLabel>
-                          <input onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></input>
+                          <input value={getValueByKey(item.key, loanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></input>
                         </FieldLabel>
                       ) : item.type === dataTypes.TEXTAREA ? (
                         <FieldLabel>
-                          <textarea onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></textarea>
+                          <textarea value={getValueByKey(item.key, loanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></textarea>
                         </FieldLabel>
                       ) : null}
                     </FieldWrapper>
@@ -178,136 +180,3 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   );
 };
 
-const DynamicFormWrapper = styled.div`
-  background-color: white;
-  margin: 20px;
-  padding: 12px;
-  border-radius: 8px;
-  padding-bottom: 40px;
-  font-family: ${(props) => props.theme.fonts[0]};
-
-  @media (max-width: 768px) {
-    padding-bottom: 40px;
-    margin: 8px;
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-
-  button {
-    border: 0px;
-    margin: 4px;
-    padding: 12px 20px;
-    cursor: pointer;
-    border-radius: 8px;
-    @media (max-width: 768px) {
-      padding: 8px 16px;
-    }
-  }
-
-  button:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-
-  .save {
-    color: ${({ theme: { colors } }) => colors.tertiary};
-    background-color: ${({ theme: { colors } }) => colors.primary};
-  }
-  .save:hover {
-    color: ${({ theme: { colors } }) => colors.primary};
-    background-color: ${({ theme: { colors } }) => colors.tertiary};
-  }
-  .reset {
-    color: ${({ theme: { colors } }) => colors.primary};
-    background-color: ${({ theme: { colors } }) => colors.quaternary};
-  }
-  .reset:hover,
-  .navigation:hover {
-    color: ${({ theme: { colors } }) => colors.tertiary};
-    background-color: ${({ theme: { colors } }) => colors.primary};
-  }
-
-  .navigation {
-    color: ${({ theme: { colors } }) => colors.primary};
-    background-color: ${({ theme: { colors } }) => colors.tertiary};
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.large};
-    margin-right: 20px;
-    margin-left: 20px;
-  }
-`;
-
-const FormTitle = styled.div`
-  color: ${({ theme: { colors } }) => colors.primary};
-  font-size: ${({ theme: { fontSizes } }) => fontSizes.large};
-  margin: 20px;
-
-  .message {
-    margin: 40px;
-    padding: 40px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.medium};
-    margin: 10px;
-  }
-`;
-
-const FieldLabel = styled.div`
-  color: ${({ theme: { colors } }) => colors.primary};
-  margin: 4px 28px;
-  text-align: left;
-
-  span {
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.small};
-  }
-
-  @media (max-width: 768px) {
-    margin: 4px 14px;
-  }
-`;
-
-const FieldWrapper = styled.div`
-  display: flex;
-  margin: 20px 28px;
-  color: ${({ theme: { colors } }) => colors.primary};
-  text-align: left;
-  flex-direction: column;
-
-  @media (max-width: 768px) {
-    margin: 10px 14px;
-  }
-
-  input,
-  textarea {
-    color: ${({ theme: { colors } }) => colors.primary};
-    border: 1px solid ${({ theme: { colors } }) => colors.primary};
-    padding: 4px;
-    width: calc(100% / 3);
-
-    @media (max-width: 768px) {
-      width: 100%;
-    }
-  }
-
-  input {
-    height: 24px;
-    font-family: ${(props) => props.theme.fonts[0]};
-    padding: 10px 20px;
-  }
-
-  textarea:focus, input:focus {
-    background-color: ${({ theme: { colors } }) => colors.tertiary};
-    outline-color: ${({ theme: { colors } }) => colors.primary};
-  }
-
-  textarea {
-    height: 60px;
-    padding: 30px 0 0 20px;
-    font-family: ${(props) => props.theme.fonts[0]};
-  }
-`;

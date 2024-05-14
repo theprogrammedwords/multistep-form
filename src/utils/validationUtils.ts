@@ -1,4 +1,4 @@
-import { FormField } from '../configs/formdata';
+import { loanData } from '../components/DynamicForm';
 
 export const validationFunctions = {
   isRequired: (value: string | null | undefined) =>
@@ -44,4 +44,14 @@ export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
   });
 
   return errors;
+};
+
+export const getValueByKey = (key: string, data: loanData[]): string => {
+  const val: loanData[] = data?.filter((item, index) => {
+    if (item.id === key) {
+      return item.value;
+    } else return '';
+  });
+
+  return val?.[0]?.value;
 };

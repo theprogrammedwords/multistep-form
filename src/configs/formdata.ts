@@ -26,9 +26,9 @@ export interface Field {
   label: string;
   key: string;
   type: DataTypes;
-  section: string;
+  section?: string;
   mandatory?: boolean;
-  placeholder: string;
+  placeholder?: string;
   value?: null | undefined | any;
   isFilled?: boolean;
   constraints?: Constraints;
@@ -46,6 +46,10 @@ export const sectionData: { [key: string]: SectionData } = {
   BANK: {
     key: 'BANK',
     label: 'Bank Details'
+  },
+  REVIEW: {
+    key: 'Review',
+    label: 'Review Details'
   }
 };
 
@@ -73,7 +77,6 @@ export const formData: FormField[] = [
           minLength: 4,
           regex: '',
           validations: [
-            (value: string) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 80),
             (value) => validationFunctions.minLength(value, 4)
           ]
@@ -92,7 +95,6 @@ export const formData: FormField[] = [
           minLength: 10,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 80),
             (value) => validationFunctions.minLength(value, 10)
           ]
@@ -111,7 +113,6 @@ export const formData: FormField[] = [
           minLength: 4,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 80),
             (value) => validationFunctions.minLength(value, 4)
           ]
@@ -136,7 +137,6 @@ export const formData: FormField[] = [
           minLength: 4,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 80),
             (value) => validationFunctions.minLength(value, 4)
           ]
@@ -155,7 +155,6 @@ export const formData: FormField[] = [
           minLength: 10,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 80),
             (value) => validationFunctions.minLength(value, 10)
           ]
@@ -174,7 +173,6 @@ export const formData: FormField[] = [
           minLength: 4,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 80),
             (value) => validationFunctions.minLength(value, 4)
           ]
@@ -199,7 +197,6 @@ export const formData: FormField[] = [
           minLength: 10,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 13),
             (value) => validationFunctions.minLength(value, 10)
           ]
@@ -218,7 +215,6 @@ export const formData: FormField[] = [
           minLength: 6,
           regex: '',
           validations: [
-            (value) => validationFunctions.isRequired(value),
             (value) => validationFunctions.maxLength(value, 40),
             (value) => validationFunctions.minLength(value, 6)
           ]
