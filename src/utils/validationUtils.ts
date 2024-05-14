@@ -25,7 +25,7 @@ interface Error {
   error: string;
 }
 
-export function checkValues(fields: Field[], formData: FormData[]): Error[] {
+export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
   const errors: Error[] = [];
 
   fields?.forEach((field: Field) => {
@@ -44,4 +44,4 @@ export function checkValues(fields: Field[], formData: FormData[]): Error[] {
   });
 
   return errors;
-}
+};

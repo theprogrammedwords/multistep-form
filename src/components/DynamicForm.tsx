@@ -80,8 +80,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
     });
 
-    console.log(errors)
-    localStorage.setItem('loanData', JSON.stringify(formDataForStorage))
+    localStorage.setItem('loanData', JSON.stringify(formDataForStorage));
   }
 
   useEffect(() => {
