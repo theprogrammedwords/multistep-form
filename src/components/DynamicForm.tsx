@@ -10,17 +10,12 @@ interface DynamicFormProps {
 export const DynamicForm = ({ data }: DynamicFormProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
-
-  
   const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
-    
     if (!currentData || !currentData.fields) {
       return true; 
     }
-  
-    const result: boolean = currentData.fields.some((item) => !item.isFilled);
-  
+    const result: boolean = currentData.fields.some((item) => !item.isFilled && item.mandatory);
     return result;
   };
 
@@ -126,10 +121,11 @@ const ButtonWrapper = styled.div`
   }
 
   button:disabled {
-    background-color: #cccccc; /* Grey */
-    color: #666666; /* Darker grey text */
-    cursor: not-allowed; /* Change cursor to 'not-allowed' */
-    opacity: 0.6; /* Make the button slightly transparent */
+    background-color: #cccccc; 
+    color: #666666; 
+    cursor: not-allowed; 
+    opacity: 0.6; 
+    
   }
 
   .save {
