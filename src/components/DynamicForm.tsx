@@ -180,11 +180,16 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
                 {isLastStep ? 'Submit' : 'Save'}
               </button>
             )}
-            {/* {(
-              <button className="reset" onClick={()=> handleReset()}>
-                Reset
+            {isLastStep && (
+              <button className="reset" onClick={()=> {
+                    localStorage.clear();
+                    setFormLoanData([])
+                    setActiveIndex(-1)
+                }
+            }>
+                Reset Form
               </button>
-            )} */}
+            )}
             {(
               <button
                 disabled={isNavigationDisabled('next')}
