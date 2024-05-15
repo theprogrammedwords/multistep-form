@@ -22,7 +22,7 @@ interface FormData {
 }
 interface Error {
   id: string;
-  error: string;
+  isValid: boolean;
 }
 
 export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
@@ -36,7 +36,7 @@ export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
         if (validationResult !== true) {
           errors.push({
             id: formField.id,
-            error: validationResult as string
+            isValid: validationResult as boolean
           });
         }
       });

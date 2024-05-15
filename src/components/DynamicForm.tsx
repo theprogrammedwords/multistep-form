@@ -27,9 +27,14 @@ export interface loanData {
   value: string;
 }
 
+interface Error {
+  id: string;
+  isValid: boolean;
+}
 interface SectionProps {
   title: string;
   items: loanData[];
+  error: Error[];
 }
 
 export const DynamicForm = ({ data }: DynamicFormProps) => {
@@ -45,7 +50,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   const [formLoanData, setFormLoanData] = useState<loanData[]>(
     loanData ? (loanData as unknown as any) : []
   );
-  const [error, setError] = useState([])
+  const [error, setError] = useState<Error[]>([]);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -92,7 +97,6 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     }
   };
 
-  console.log({error})
   const handleFieldChange = (index: number, item: FormField, value: string) => {
     const updatedFormData = formData?.map((field, i) => {
       if (i === index) {
@@ -261,8 +265,15 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       {showPreview && (
         <>
           {Object.keys(sections).map((sectionName) => (
-            <Section key={sectionName} title={sectionName} items={sections[sectionName]} />
+            <Section
+              error={error}
+              key={sectionName}
+              title={sectionName}
+              items={sections[sectionName]}
+            />
           ))}
+
+          <span className='error'>*items highlighted in red are invalid</span>
           <ButtonWrapper>
             <button className="save">{'Submit'}</button>
           </ButtonWrapper>
@@ -272,16 +283,25 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   );
 };
 
-const Section: React.FC<SectionProps> = ({ title, items }) => (
-  <PreviewWrapper>
+const Section = ({ error, title, items }: SectionProps) => {
+    const isInvalidItem = (id : string) => {
+        const item = error?.find((invalidItem : Error) => invalidItem.id === id);
+        return item ? !item.isValid : false;
+    };
+
+  return (
+    <PreviewWrapper>
     <h4>{toTitleCase(title) + ' Details'}</h4>
     <div>
       {items.map((item) => (
-        <div className="field-value" key={item.id}>
-          <div>{readableKeyString(item.id) + ' : '}</div>
-          <div>{item.value}</div>
+        <div className="field-value" key={item.id} style={{}}>
+          <div>{readableKeyString(item.id) + ' : '}</div> 
+          <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>
+            {item.value}
+          </div>
         </div>
       ))}
     </div>
   </PreviewWrapper>
-);
+  );
+};

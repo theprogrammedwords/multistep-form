@@ -7,6 +7,12 @@ export const DynamicFormWrapper = styled.div`
   padding-bottom: 40px;
   font-family: ${(props) => props.theme.fonts[0]};
 
+  .error {
+    font-size: ${({ theme: { fontSizes } }) => fontSizes.small};
+    span {
+        color : red
+    }
+  }
   @media (max-width: 768px) {
     padding-bottom: 40px;
     margin: 8px;
