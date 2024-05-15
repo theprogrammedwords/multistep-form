@@ -7,6 +7,7 @@ interface ThemeInterface {
     secondary: string;
     tertiary: string;
     quaternary: string;
+    error : string
   };
   fonts: string[];
   fontSizes: {
@@ -14,6 +15,7 @@ interface ThemeInterface {
     medium: string;
     large: string;
     extra : string;
+    extrasmall : string
   };
 }
 
@@ -28,10 +30,12 @@ const theme: ThemeInterface = {
     secondary: "#6DFFDD",
     tertiary: "#EDFDF8",
     quaternary: "#E8F3F1",
+    error : "#ff0000"
   },
   fonts: ["Poppins"],
   fontSizes: {
     small: "14px",
+    extrasmall : '10px',
     medium: "18px",
     large: "22px",
     extra : "26px"

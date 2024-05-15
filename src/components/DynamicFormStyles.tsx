@@ -8,10 +8,9 @@ export const DynamicFormWrapper = styled.div`
   font-family: ${(props) => props.theme.fonts[0]};
 
   .error {
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.small};
-    span {
-        color : red
-    }
+    font-size: ${({ theme: { fontSizes } }) => fontSizes.extrasmall};
+    color: ${({ theme: { colors } }) => colors.error};
+    margin: 0;
   }
   @media (max-width: 768px) {
     padding-bottom: 40px;
@@ -142,7 +141,7 @@ export const FieldWrapper = styled.div`
 export const PreviewWrapper = styled.div`
   display: flex;
   color: ${({ theme: { colors } }) => colors.primary};
-  font-size: 12px;
+  font-size: ${({ theme: { fontSizes } }) => fontSizes.small};
   text-align: left;
   flex-direction: column;
 

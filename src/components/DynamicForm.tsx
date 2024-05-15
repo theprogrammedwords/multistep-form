@@ -17,6 +17,7 @@ import {
   PreviewWrapper
 } from './DynamicFormStyles';
 
+const URL = "https://webhook.site/cbfa14a1-8a94-4751-9476-f8bbe43a4e05";
 interface DynamicFormProps {
   data: FormField[];
 }
@@ -51,6 +52,8 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     loanData ? (loanData as unknown as any) : []
   );
   const [error, setError] = useState<Error[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -139,6 +142,40 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     return false;
   };
 
+
+  const submitData = async () => {
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    const body = {
+      data: formLoanData
+    };
+
+    interface options {
+        method : string,
+        headers : unknown,
+        mode : RequestMode, 
+        body : loanData[]
+    }
+    const options = {
+      method: "POST",
+      headers,
+      mode: "cors" as RequestMode,
+      body: JSON.stringify(body),
+    };
+
+    fetch("https://eopffoflt1xjzf.m.pipedream.net", options).then((res) => {
+        setLoading(false)
+        alert("Data sent successfully to Pipedream mock server");
+    });
+  };
+
+  const handleFormSubmit = ()=> {
+    setLoading(true);
+    setShowPreview(true);
+    setSuccess(true);
+    submitData();
+  }
+
   useEffect(() => {
     if (activeIndex !== -1) {
       let activeConfigData = data[activeIndex]?.fields || [];
@@ -166,7 +203,9 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   }, {});
 
   return (
+
     <DynamicFormWrapper>
+    {loading && <>Loading...</>}
       {!showPreview && (
         <>
           {' '}
@@ -262,7 +301,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
           </ButtonWrapper>
         </>
       )}
-      {showPreview && (
+      {showPreview && !loading && (
         <>
           {Object.keys(sections).map((sectionName) => (
             <Section
@@ -273,10 +312,26 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
             />
           ))}
 
-          <span className='error'>*items highlighted in red are invalid</span>
+          {error.length > 0 && (
+            <span className="error">*items highlighted in red are invalid, can't be submitted</span>
+          )}
+
+        {!success && 
           <ButtonWrapper>
-            <button className="save">{'Submit'}</button>
-          </ButtonWrapper>
+          <button disabled={error.length > 0} className="save" onClick={()=> handleFormSubmit()}>
+            {'Submit'}
+          </button>
+          <button
+            className="reset"
+            onClick={() => {
+              setActiveIndex(data.length - 1);
+              setShowPreview(false);
+            }}>
+            {'Go Back'}
+          </button>
+        </ButtonWrapper>        
+        }
+        {success && <FieldLabel className='success'><strong className='success'>Data submitted successfully !!!</strong></FieldLabel>}
         </>
       )}
     </DynamicFormWrapper>
@@ -284,24 +339,22 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
 };
 
 const Section = ({ error, title, items }: SectionProps) => {
-    const isInvalidItem = (id : string) => {
-        const item = error?.find((invalidItem : Error) => invalidItem.id === id);
-        return item ? !item.isValid : false;
-    };
+  const isInvalidItem = (id: string) => {
+    const item = error?.find((invalidItem: Error) => invalidItem.id === id);
+    return item ? !item.isValid : false;
+  };
 
   return (
     <PreviewWrapper>
-    <h4>{toTitleCase(title) + ' Details'}</h4>
-    <div>
-      {items.map((item) => (
-        <div className="field-value" key={item.id} style={{}}>
-          <div>{readableKeyString(item.id) + ' : '}</div> 
-          <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>
-            {item.value}
+      <h4>{toTitleCase(title) + ' Details'}</h4>
+      <div>
+        {items.map((item) => (
+          <div className="field-value" key={item.id} style={{}}>
+            <div>{readableKeyString(item.id) + ' : '}</div>
+            <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>{item.value}</div>
           </div>
-        </div>
-      ))}
-    </div>
-  </PreviewWrapper>
+        ))}
+      </div>
+    </PreviewWrapper>
   );
 };
