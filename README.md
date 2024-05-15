@@ -5,6 +5,10 @@
 - Install all the necessary modules using `npm i`
 - In terminal, please enter `npm run dev` to run the application
 
+### Configurability : 
+
+- Read this , https://github.com/theprogrammedwords/multistep-form/blob/main/configurationDocument.md
+
 ### App Overview 
 - Consists of 3 steps, configurable in code at any point
 - Basic validations in journey, and before submission, the error is shown if validation is not matched.
