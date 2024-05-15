@@ -18,7 +18,7 @@ export interface loanData {
 export const DynamicForm = ({ data }: DynamicFormProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const loanData: loanData[] = JSON.parse(localStorage.getItem('loanData') as string) as loanData[];
-  const [formLoanData, setFormLoanData] = useState<loanData[]>(loanData);
+  const [formLoanData, setFormLoanData] = useState<loanData[]>([]);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -41,35 +41,48 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
 
 
   const handleSave = () => {
-    const formDataForStorage: loanData[] = loanData ? loanData : [];
-
-    formData?.forEach((item, index) => {
-        const localData: loanData = {
-            sectionName: data[activeIndex].key,
-            id: item.key,
-            value: item.value
-        };
-
-        const existingIndex = formDataForStorage.findIndex(
-            (dataItem) => dataItem.sectionName === localData.sectionName && dataItem.id === localData.id
-        );
-
-        if (existingIndex !== -1) {
-            formDataForStorage[existingIndex] = localData;
-        } else {
-            formDataForStorage.push(localData);
-        }
-    });
-
     const errors: any = [];
     data?.forEach((section) => {
-        const sectionFields = formDataForStorage?.filter((field) => field.sectionName === section.key);
+        const sectionFields = formLoanData?.filter((field) => field.sectionName === section.key);
         errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
     });
-
     setActiveIndex(activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1);
-    localStorage.setItem('loanData', JSON.stringify(formDataForStorage));
+    localStorage.setItem('loanData', JSON.stringify(formLoanData))
 };
+
+const handleFieldChange = (index: number, item: FormField, value: string) => {
+    const updatedFormData = formData?.map((field, i) => {
+      if (i === index) {
+        return {
+          ...field,
+          value: value,
+          isFilled: value.trim().length > 0
+        };
+      }
+      return field;
+    });
+
+    // Update formLoanData
+    const updatedFormLoanData: loanData[] = [...formLoanData];
+    const localData = {
+      sectionName: data[activeIndex].key,
+      id: item.key,
+      value: value
+    };
+
+    const existingIndex = updatedFormLoanData.findIndex(
+      (dataItem) => dataItem.sectionName === localData.sectionName && dataItem.id === localData.id
+    );
+
+    if (existingIndex !== -1) {
+      updatedFormLoanData[existingIndex] = localData;
+    } else {
+      updatedFormLoanData.push(localData);
+    }
+
+    setFormData(updatedFormData);
+    setFormLoanData(updatedFormLoanData as unknown as []);
+  };
 
 
   const isNavigationDisabled = (type: string): boolean => {
@@ -80,20 +93,6 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     }
     return false;
   };
-
-  const handleFieldChange = (index: number , item : FormField, value : string)=> {
-    const updatedFormData = formData?.map((field, i) => {
-        if (i === index) {
-          return {
-            ...field,
-            value : value,
-            isFilled: value.trim().length > 0
-          };
-        }
-        return field;
-      });
-      setFormData(updatedFormData);
-  }
 
   
 
@@ -131,11 +130,11 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                       </FieldLabel> 
                       {item.type === dataTypes.TEXTFIELD ? (
                         <FieldLabel>
-                          <input value={getValueByKey(item.key, loanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></input>
+                          <input value={getValueByKey(item.key, formLoanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></input>
                         </FieldLabel>
                       ) : item.type === dataTypes.TEXTAREA ? (
                         <FieldLabel>
-                          <textarea value={getValueByKey(item.key, loanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></textarea>
+                          <textarea value={getValueByKey(item.key, formLoanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></textarea>
                         </FieldLabel>
                       ) : null}
                     </FieldWrapper>
