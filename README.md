@@ -42,3 +42,9 @@ Submission screens :
 <img width="1418" alt="Screenshot 2024-05-15 at 2 55 29 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/2af10aa8-7dd6-4bff-92d7-15d0867046bd">
 
 <img width="1418" alt="Screenshot 2024-05-15 at 2 54 15 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/fd905a17-b86f-410b-b09c-0e6349f92fa8">
+
+
+Mobile View : 
+<img width="556" alt="Screenshot 2024-05-15 at 3 02 23 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/6f91cfba-b573-4d51-aa4e-e5338df47e4c">
+
+
