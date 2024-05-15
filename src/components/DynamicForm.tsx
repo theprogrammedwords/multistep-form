@@ -383,11 +383,13 @@ const Section = ({ error, title, items }: SectionProps) => {
               <div>{readableKeyString(item.id) + ' : '}</div>
               <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>{item.value}</div>
             </div>
-            <div
-              className="field-value"
-              style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit', fontSize: '8px' }}>
-              {error[index]?.message}
-            </div>
+            {isInvalidItem(item.id) && (
+              <div
+                className="field-value"
+                style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit', fontSize: '8px' }}>
+                {error[index]?.message}
+              </div>
+            )}
           </>
         ))}
       </div>
