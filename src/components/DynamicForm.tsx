@@ -97,7 +97,6 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
     setFormLoanData(updatedFormLoanData as unknown as []);
   };
 
-
   const isNavigationDisabled = (type: string): boolean => {
     if (type === 'prev') {
       return activeIndex === 0 ? true : false;
@@ -181,11 +180,11 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
                 Save
               </button>
             )}
-            {(
-              <button className="reset">
+            {/* {(
+              <button className="reset" onClick={()=> handleReset()}>
                 Reset
               </button>
-            )}
+            )} */}
             {(
               <button
                 disabled={isNavigationDisabled('next')}
