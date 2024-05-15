@@ -20,6 +20,7 @@ import { Section } from './Section';
 
 interface DynamicFormProps {
   data: FormField[];
+  id: string;
 }
 
 export interface loanData {
@@ -38,7 +39,7 @@ interface Sections {
   [key: string]: loanData[];
 }
 
-export const DynamicForm = ({ data }: DynamicFormProps) => {
+export const DynamicForm = ({ data, id }: DynamicFormProps) => {
   const lastModifiedIndex: number = JSON.parse(
     localStorage.getItem('lastModifiedIndex') as unknown as any
   );

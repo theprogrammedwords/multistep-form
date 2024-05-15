@@ -12,7 +12,7 @@ function App() {
           <Heading>Loan Form</Heading>
         </Container>
         <Body>
-          <DynamicForm data={formData} />
+          <DynamicForm id="dynamic-form" data={formData} />
         </Body>
       </Theme>
     </div>
