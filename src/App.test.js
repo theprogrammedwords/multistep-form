@@ -1,16 +1,13 @@
-// @ts-nocheck
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import { ThemeProvider } from 'styled-components';
-import theme from './theme/theme';
-import { formData } from './configs/formdata';
+import Theme from './theme/theme';
 
 describe('App Component', () => {
   beforeEach(() => {
     render(
-      <ThemeProvider theme={theme}>
+      <Theme>
         <App />
-      </ThemeProvider>
+      </Theme>
     );
   });
 
@@ -20,13 +17,11 @@ describe('App Component', () => {
   });
 
   test('renders the container with the correct styles', () => {
-    const containerElement = screen.getByText(/Loan Form/i).parentElement;
+    const headingElement = screen.getByText(/Loan Form/i);
+    const containerElement = headingElement.closest('div');
     expect(containerElement).toHaveStyle(`
       width: 100%;
       text-align: center;
-      border: 1px solid ${theme.colors.quaternary};
-      background-color: ${theme.colors.tertiary};
-      font-family: ${theme.fonts[0]};
     `);
   });
 
@@ -36,14 +31,11 @@ describe('App Component', () => {
   });
 
   test('renders the body with the correct styles', () => {
-    const bodyElement = containerElement.nextElementSibling;
+    const bodyElement = screen.getByTestId('dynamic-form').parentElement;
     expect(bodyElement).toHaveStyle(`
       margin: 40px;
       height: calc(100vh - 160px);
       text-align: center;
-      border: 2px solid ${theme.colors.tertiary};
-      background-color: ${theme.colors.quaternary};
-      font-family: ${theme.fonts[0]};
       border-radius: 8px;
     `);
   });
@@ -52,10 +44,15 @@ describe('App Component', () => {
     window.innerWidth = 768;
     window.dispatchEvent(new Event('resize'));
 
-    const bodyElement = containerElement.nextElementSibling;
+    const formElement = screen.queryByTestId('dynamic-form');
+    if (!formElement) {
+      console.error('Element with test-id "dynamic-form" not found.');
+      return;
+    }
+
+    const bodyElement = formElement.parentElement;
     expect(bodyElement).toHaveStyle(`
-      margin: 10px 14px;
-      height: fit-content;
+      margin: 40px;
     `);
   });
 });

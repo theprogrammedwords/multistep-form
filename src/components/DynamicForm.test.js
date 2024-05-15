@@ -49,13 +49,10 @@ const mockFormData = [
 
 describe('DynamicForm', () => {
   test('renders form fields and allows navigation', () => {
-    render(<DynamicForm data={mockFormData} id="test-id" />);
+    render(<DynamicForm data={mockFormData} id="input-test" />);
 
-    // Check if the form fields are rendered
     expect(screen.getByPlaceholderText('Enter your first name')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Enter your last name')).toBeInTheDocument();
-
-    // Fill in the first step form fields
     fireEvent.change(screen.getByPlaceholderText('Enter your first name'), {
       target: { value: 'John' }
     });

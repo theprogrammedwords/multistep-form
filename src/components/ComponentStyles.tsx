@@ -5,11 +5,11 @@ export const DynamicFormWrapper = styled.div`
   padding: 12px;
   border-radius: 8px;
   padding-bottom: 40px;
-  font-family: ${(props) => props.theme.fonts[0]};
+  font-family: ${(props) => props.theme.fonts?.[0]};
 
   .error {
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.extrasmall};
-    color: ${({ theme: { colors } }) => colors.error};
+    font-size: ${({ theme: { fontSizes } }) => fontSizes?.extrasmall};
+    color: ${({ theme: { colors } }) => colors?.error};
     margin: 0;
   }
   @media (max-width: 768px) {
@@ -41,35 +41,35 @@ export const ButtonWrapper = styled.div`
   }
 
   .save {
-    color: ${({ theme: { colors } }) => colors.tertiary};
-    background-color: ${({ theme: { colors } }) => colors.primary};
+    color: ${({ theme: { colors } }) => colors?.tertiary};
+    background-color: ${({ theme: { colors } }) => colors?.primary};
   }
   .save:hover {
-    color: ${({ theme: { colors } }) => colors.primary};
-    background-color: ${({ theme: { colors } }) => colors.tertiary};
+    color: ${({ theme: { colors } }) => colors?.primary};
+    background-color: ${({ theme: { colors } }) => colors?.tertiary};
   }
   .reset {
-    color: ${({ theme: { colors } }) => colors.primary};
-    background-color: ${({ theme: { colors } }) => colors.quaternary};
+    color: ${({ theme: { colors } }) => colors?.primary};
+    background-color: ${({ theme: { colors } }) => colors?.quaternary};
   }
   .reset:hover,
   .navigation:hover {
-    color: ${({ theme: { colors } }) => colors.tertiary};
-    background-color: ${({ theme: { colors } }) => colors.primary};
+    color: ${({ theme: { colors } }) => colors?.tertiary};
+    background-color: ${({ theme: { colors } }) => colors?.primary};
   }
 
   .navigation {
-    color: ${({ theme: { colors } }) => colors.primary};
-    background-color: ${({ theme: { colors } }) => colors.tertiary};
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.large};
+    color: ${({ theme: { colors } }) => colors?.primary};
+    background-color: ${({ theme: { colors } }) => colors?.tertiary};
+    font-size: ${({ theme: { fontSizes } }) => fontSizes?.large};
     margin-right: 20px;
     margin-left: 20px;
   }
 `;
 
 export const FormTitle = styled.div`
-  color: ${({ theme: { colors } }) => colors.primary};
-  font-size: ${({ theme: { fontSizes } }) => fontSizes.large};
+  color: ${({ theme: { colors } }) => colors?.primary};
+  font-size: ${({ theme: { fontSizes } }) => fontSizes?.large};
   margin: 20px;
 
   .message {
@@ -78,13 +78,13 @@ export const FormTitle = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: ${({ theme: { fontSizes } }) => fontSizes.medium};
+    font-size: ${({ theme: { fontSizes } }) => fontSizes?.medium};
     margin: 10px;
   }
 `;
 
 export const FieldLabel = styled.div`
-  color: ${({ theme: { colors } }) => colors.primary};
+  color: ${({ theme: { colors } }) => colors?.primary};
   margin: 4px 28px;
   text-align: left;
 
@@ -100,7 +100,7 @@ export const FieldLabel = styled.div`
 export const FieldWrapper = styled.div`
   display: flex;
   margin: 20px 28px;
-  color: ${({ theme: { colors } }) => colors.primary};
+  color: ${({ theme: { colors } }) => colors?.primary};
   text-align: left;
   flex-direction: column;
 
@@ -110,8 +110,8 @@ export const FieldWrapper = styled.div`
 
   input,
   textarea {
-    color: ${({ theme: { colors } }) => colors.primary};
-    border: 1px solid ${({ theme: { colors } }) => colors.primary};
+    color: ${({ theme: { colors } }) => colors?.primary};
+    border: 1px solid ${({ theme: { colors } }) => colors?.primary};
     padding: 4px;
     width: calc(100% / 3);
 
@@ -122,26 +122,26 @@ export const FieldWrapper = styled.div`
 
   input {
     height: 24px;
-    font-family: ${(props) => props.theme.fonts[0]};
+    font-family: ${(props) => props.theme.fonts?.[0]};
     padding: 10px 20px;
   }
 
   textarea:focus,
   input:focus {
-    background-color: ${({ theme: { colors } }) => colors.tertiary};
-    outline-color: ${({ theme: { colors } }) => colors.primary};
+    background-color: ${({ theme: { colors } }) => colors?.tertiary};
+    outline-color: ${({ theme: { colors } }) => colors?.primary};
   }
 
   textarea {
     height: 60px;
     padding: 30px 0 0 20px;
-    font-family: ${(props) => props.theme.fonts[0]};
+    font-family: ${(props) => props.theme.fonts?.[0]};
   }
 `;
 
 export const PreviewWrapper = styled.div`
   display: flex;
-  color: ${({ theme: { colors } }) => colors.primary};
+  color: ${({ theme: { colors } }) => colors?.primary};
   font-size: ${({ theme: { fontSizes } }) => fontSizes.small};
   text-align: left;
   flex-direction: column;

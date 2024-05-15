@@ -204,7 +204,7 @@ export const DynamicForm = ({ data, id }: DynamicFormProps) => {
   }, [activeIndex, data]);
 
   return (
-    <DynamicFormWrapper>
+    <DynamicFormWrapper data-testid={id} id={id}>
       {loading && <>Loading...</>}
       {!showPreview && (
         <>
@@ -227,6 +227,8 @@ export const DynamicForm = ({ data, id }: DynamicFormProps) => {
                           {item.type === dataTypes.TEXTFIELD ? (
                             <FieldLabel>
                               <input
+                                data-testid="input-test"
+                                id="input-test"
                                 type={item.valuetype}
                                 value={getValueByKey(item.key, formLoanData) as unknown as string}
                                 onChange={(e) => handleFieldChange(index, item, e.target.value)}
@@ -235,6 +237,8 @@ export const DynamicForm = ({ data, id }: DynamicFormProps) => {
                           ) : item.type === dataTypes.TEXTAREA ? (
                             <FieldLabel>
                               <textarea
+                                data-testid="textarea-test"
+                                id="textarea-test"
                                 value={getValueByKey(item.key, formLoanData) as unknown as string}
                                 onChange={(e) => handleFieldChange(index, item, e.target.value)}
                                 placeholder={item.placeholder}></textarea>
