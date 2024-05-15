@@ -47,11 +47,30 @@ export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
 };
 
 export const getValueByKey = (key: string, data: loanData[]): string => {
-  const val: loanData[] = data?.filter((item, index) => {
-    if (item.id === key) {
-      return item.value;
-    } else return '';
-  });
+  const val: loanData[] =
+    data &&
+    data?.filter((item, index) => {
+      if (item.id === key) {
+        return item.value;
+      } else return '';
+    });
 
   return val?.[0]?.value;
 };
+
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: ReturnType<typeof setTimeout>;
+
+  return function (...args: Parameters<T>): void {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}

@@ -1,7 +1,7 @@
 import { FormField } from '../configs/formdata';
 import { useEffect, useState } from 'react';
 import { dataTypes } from '../configs/formdata';
-import { checkValues, getValueByKey } from '../utils/validationUtils';
+import { checkValues, debounce, getValueByKey } from '../utils/validationUtils';
 import { DynamicFormWrapper, FieldLabel, FieldWrapper, FormTitle, ButtonWrapper } from './DynamicFormStyles';
 
 interface DynamicFormProps {
@@ -16,15 +16,17 @@ export interface loanData {
 
 
 export const DynamicForm = ({ data }: DynamicFormProps) => {
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const loanData: loanData[] = JSON.parse(localStorage.getItem('loanData') as string) as loanData[];
-  const [formLoanData, setFormLoanData] = useState<loanData[]>([]);
+  const lastModifiedIndex : number = JSON.parse(localStorage.getItem('lastModifiedIndex') as unknown as any)
+  const loanData: loanData = JSON.parse(localStorage.getItem('loanData') as unknown as any);
+  const [activeIndex, setActiveIndex] = useState<number>(lastModifiedIndex ? lastModifiedIndex : -1);
+
+  const [formLoanData, setFormLoanData] = useState<loanData[]>(loanData ? loanData as unknown as any : []);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
       ...item,
       isFilled: false,
-      value: null
+      value: null,
     };
   });
   const [formData, setFormData] = useState(activeConfigData);
@@ -47,7 +49,8 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
     });
     setActiveIndex(activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1);
-    localStorage.setItem('loanData', JSON.stringify(formLoanData))
+    localStorage.setItem('loanData', JSON.stringify(formLoanData));
+    localStorage.setItem('lastModifiedIndex', JSON.stringify(activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1))
 };
 
 const handleFieldChange = (index: number, item: FormField, value: string) => {
@@ -62,7 +65,6 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
       return field;
     });
 
-    // Update formLoanData
     const updatedFormLoanData: loanData[] = [...formLoanData];
     const localData = {
       sectionName: data[activeIndex].key,
