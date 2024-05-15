@@ -4,6 +4,7 @@ import { dataTypes } from '../configs/formdata';
 import {
   checkValues,
   debounce,
+  generateLoanId,
   getValueByKey,
   readableKeyString,
   toTitleCase
@@ -17,7 +18,6 @@ import {
   PreviewWrapper
 } from './DynamicFormStyles';
 
-const URL = "https://webhook.site/cbfa14a1-8a94-4751-9476-f8bbe43a4e05";
 interface DynamicFormProps {
   data: FormField[];
 }
@@ -42,18 +42,19 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   const lastModifiedIndex: number = JSON.parse(
     localStorage.getItem('lastModifiedIndex') as unknown as any
   );
+  const LAN = JSON.parse(localStorage.getItem('LAN') as string);
   const loanData: loanData = JSON.parse(localStorage.getItem('loanData') as unknown as any);
   const [activeIndex, setActiveIndex] = useState<number>(
     lastModifiedIndex ? lastModifiedIndex : -1
   );
-  const [showPreview, setShowPreview] = useState<boolean>(false);
+  const [showPreview, setShowPreview] = useState<boolean>(LAN ? true : false);
   const isLastStep = activeIndex === data.length - 1;
   const [formLoanData, setFormLoanData] = useState<loanData[]>(
     loanData ? (loanData as unknown as any) : []
   );
   const [error, setError] = useState<Error[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(LAN ? true : false);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -142,39 +143,40 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
     return false;
   };
 
-
   const submitData = async () => {
     const headers = new Headers();
-    headers.append("Content-Type", "application/json");
+    headers.append('Content-Type', 'application/json');
     const body = {
       data: formLoanData
     };
 
     interface options {
-        method : string,
-        headers : unknown,
-        mode : RequestMode, 
-        body : loanData[]
+      method: string;
+      headers: unknown;
+      mode: RequestMode;
+      body: loanData[];
     }
     const options = {
-      method: "POST",
+      method: 'POST',
       headers,
-      mode: "cors" as RequestMode,
-      body: JSON.stringify(body),
+      mode: 'cors' as RequestMode,
+      body: JSON.stringify(body)
     };
 
-    fetch("https://eopffoflt1xjzf.m.pipedream.net", options).then((res) => {
-        setLoading(false)
-        alert("Data sent successfully to Pipedream mock server");
+    //mock api call - ideally write in service file.
+    fetch('https://eopffoflt1xjzf.m.pipedream.net', options).then((res) => {
+      setLoading(false);
+      alert('Data sent successfully to Pipedream mock server');
     });
   };
 
-  const handleFormSubmit = ()=> {
+  const handleFormSubmit = () => {
     setLoading(true);
     setShowPreview(true);
     setSuccess(true);
+    localStorage.setItem('LAN', JSON.stringify(generateLoanId()));
     submitData();
-  }
+  };
 
   useEffect(() => {
     if (activeIndex !== -1) {
@@ -203,9 +205,8 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   }, {});
 
   return (
-
     <DynamicFormWrapper>
-    {loading && <>Loading...</>}
+      {loading && <>Loading...</>}
       {!showPreview && (
         <>
           {' '}
@@ -227,6 +228,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
                           {item.type === dataTypes.TEXTFIELD ? (
                             <FieldLabel>
                               <input
+                                type={item.valuetype}
                                 value={getValueByKey(item.key, formLoanData) as unknown as string}
                                 onChange={(e) => handleFieldChange(index, item, e.target.value)}
                                 placeholder={item.placeholder}></input>
@@ -316,22 +318,46 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
             <span className="error">*items highlighted in red are invalid, can't be submitted</span>
           )}
 
-        {!success && 
-          <ButtonWrapper>
-          <button disabled={error.length > 0} className="save" onClick={()=> handleFormSubmit()}>
-            {'Submit'}
-          </button>
-          <button
-            className="reset"
-            onClick={() => {
-              setActiveIndex(data.length - 1);
-              setShowPreview(false);
-            }}>
-            {'Go Back'}
-          </button>
-        </ButtonWrapper>        
-        }
-        {success && <FieldLabel className='success'><strong className='success'>Data submitted successfully !!!</strong></FieldLabel>}
+          {!success && (
+            <ButtonWrapper>
+              <button
+                disabled={error.length > 0}
+                className="save"
+                onClick={() => handleFormSubmit()}>
+                {'Submit'}
+              </button>
+              <button
+                className="reset"
+                onClick={() => {
+                  setActiveIndex(data.length - 1);
+                  setShowPreview(false);
+                }}>
+                {'Go Back'}
+              </button>
+            </ButtonWrapper>
+          )}
+
+          {success && (
+            <FieldLabel className="success">
+              {' '}
+              <strong className="success">
+                Data submitted successfully !!!
+                <div>LAN ID : {JSON.parse(localStorage.getItem('LAN') as string)}</div>
+              </strong>
+              <ButtonWrapper>
+                <button
+                  className="save"
+                  onClick={() => {
+                    localStorage.clear();
+                    setActiveIndex(-1);
+                    setShowPreview(false);
+                    window.location.reload();
+                  }}>
+                  {'Start another loan application'}
+                </button>
+              </ButtonWrapper>
+            </FieldLabel>
+          )}
         </>
       )}
     </DynamicFormWrapper>

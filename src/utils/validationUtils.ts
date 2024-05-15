@@ -90,3 +90,16 @@ export function readableKeyString(str: string) {
 
   return data;
 }
+
+export const generateLoanId = () => {
+  const prefix = 'LAN';
+  const digits = '0123456789';
+  const digitsLength = digits.length;
+  let loanId = prefix;
+
+  for (let i = 0; i < 7; i++) {
+    loanId += digits.charAt(Math.floor(Math.random() * digitsLength));
+  }
+
+  return loanId;
+};

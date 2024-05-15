@@ -25,6 +25,7 @@ export interface Field {
   order: number;
   label: string;
   key: string;
+  valuetype?: string;
   type: DataTypes;
   section?: string;
   mandatory?: boolean;
@@ -69,6 +70,7 @@ export const formData: FormField[] = [
         label: 'Name',
         key: sectionData.PERSONAL.key + '_NAME',
         type: dataTypes.TEXTFIELD,
+        valuetype: 'text',
         placeholder: 'Fill in the name of applicant',
         section: sectionData.PERSONAL.key,
         mandatory: true,
@@ -87,6 +89,7 @@ export const formData: FormField[] = [
         label: 'Address',
         key: sectionData.PERSONAL.key + '_ADDRESS',
         type: dataTypes.TEXTAREA,
+        valuetype: 'text',
         placeholder: 'Fill in the address of applicant',
         section: sectionData.PERSONAL.key,
         mandatory: true,
@@ -103,6 +106,7 @@ export const formData: FormField[] = [
       {
         order: 3,
         label: 'Email Id',
+        valuetype: 'text',
         key: sectionData.PERSONAL.key + '_EMAILID',
         placeholder: 'Fill in the email id of applicant',
         type: dataTypes.TEXTFIELD,
@@ -130,6 +134,7 @@ export const formData: FormField[] = [
         key: sectionData.BUSINESS.key + '_NAME',
         placeholder: 'Fill in the name of business',
         type: dataTypes.TEXTFIELD,
+        valuetype: 'text',
         section: sectionData.BUSINESS.key,
         mandatory: true,
         constraints: {
@@ -148,6 +153,7 @@ export const formData: FormField[] = [
         key: sectionData.BUSINESS.key + '_ADDRESS',
         placeholder: 'Fill in the address of business',
         type: dataTypes.TEXTAREA,
+        valuetype: 'text',
         section: sectionData.BUSINESS.key,
         mandatory: true,
         constraints: {
@@ -166,6 +172,7 @@ export const formData: FormField[] = [
         key: sectionData.BUSINESS.key + '_EMAILID',
         placeholder: 'Fill in the email id of business',
         type: dataTypes.TEXTFIELD,
+        valuetype: 'text',
         section: sectionData.BUSINESS.key,
         mandatory: true,
         constraints: {
@@ -190,6 +197,7 @@ export const formData: FormField[] = [
         key: sectionData.BANK.key + '_ACCOUNTNO',
         placeholder: 'Fill in the account number of bank',
         type: dataTypes.TEXTFIELD,
+        valuetype: 'number',
         section: sectionData.BANK.key,
         mandatory: true,
         constraints: {
@@ -207,6 +215,7 @@ export const formData: FormField[] = [
         label: 'Bank Name',
         key: sectionData.BANK.key + '_BANKNAME',
         placeholder: 'Fill in the name of bank',
+        valuetype: 'text',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BANK.key,
         mandatory: true,
