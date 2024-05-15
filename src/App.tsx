@@ -2,7 +2,7 @@ import './App.css';
 import { DynamicForm } from './components/DynamicForm';
 import Theme from './theme/theme';
 import styled from 'styled-components';
-import { formData, sectionData } from './configs/formdata';
+import { formData } from './configs/formdata';
 
 function App() {
   return (
@@ -38,7 +38,7 @@ const Body = styled.div`
 
   @media (max-width: 768px) {
     margin: 10px 14px;
-    height : fit-content
+    height: fit-content;
   }
 `;
 
