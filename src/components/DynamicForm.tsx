@@ -19,7 +19,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   const lastModifiedIndex : number = JSON.parse(localStorage.getItem('lastModifiedIndex') as unknown as any)
   const loanData: loanData = JSON.parse(localStorage.getItem('loanData') as unknown as any);
   const [activeIndex, setActiveIndex] = useState<number>(lastModifiedIndex ? lastModifiedIndex : -1);
-
+  const isLastStep = activeIndex === data.length -1;
   const [formLoanData, setFormLoanData] = useState<loanData[]>(loanData ? loanData as unknown as any : []);
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
@@ -177,7 +177,7 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
             )}
             {(
               <button disabled={isSaveDisabled()} onClick={()=> handleSave()} className="save">
-                Save
+                {isLastStep ? 'Submit' : 'Save'}
               </button>
             )}
             {/* {(
