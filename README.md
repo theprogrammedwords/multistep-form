@@ -36,7 +36,9 @@ Submission screens :
 
 
 <img width="1418" alt="Screenshot 2024-05-15 at 2 55 44 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/d8f1a3f8-2034-46a0-9633-171c0d901677">
+
 <img width="1418" alt="Screenshot 2024-05-15 at 2 55 39 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/c4e043a6-eafb-4f19-9736-90a8e076c462">
+
 <img width="1418" alt="Screenshot 2024-05-15 at 2 55 29 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/2af10aa8-7dd6-4bff-92d7-15d0867046bd">
-<img width="1418" alt="Screenshot 2024-05-15 at 2 54 24 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/3e61cf69-922c-4a1e-9023-d52121c25463">
+
 <img width="1418" alt="Screenshot 2024-05-15 at 2 54 15 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/fd905a17-b86f-410b-b09c-0e6349f92fa8">
