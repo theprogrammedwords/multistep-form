@@ -1,4 +1,4 @@
-import { validationFunctions } from '../utils/validationUtils';
+import { validationFunctions } from '../utils/appUtils';
 
 export type SectionData = {
   key: string;

@@ -126,7 +126,8 @@ export const FieldWrapper = styled.div`
     padding: 10px 20px;
   }
 
-  textarea:focus, input:focus {
+  textarea:focus,
+  input:focus {
     background-color: ${({ theme: { colors } }) => colors.tertiary};
     outline-color: ${({ theme: { colors } }) => colors.primary};
   }
@@ -145,17 +146,17 @@ export const PreviewWrapper = styled.div`
   text-align: left;
   flex-direction: column;
 
-
   .field-value {
     display: flex;
     margin: 2px;
 
-    div{
-        margin: 4px;
-        padding : 2px;
+    div {
+      margin: 4px;
+      padding: 2px;
     }
   }
 
   @media (max-width: 768px) {
     margin: 10px 14px;
-  }`
+  }
+`;

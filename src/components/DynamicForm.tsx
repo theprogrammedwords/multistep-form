@@ -7,7 +7,7 @@ import {
   getValueByKey,
   readableKeyString,
   toTitleCase
-} from '../utils/validationUtils';
+} from '../utils/appUtils';
 import {
   DynamicFormWrapper,
   FieldLabel,
@@ -15,7 +15,8 @@ import {
   FormTitle,
   ButtonWrapper,
   PreviewWrapper
-} from './DynamicFormStyles';
+} from './ComponentStyles';
+import { Section } from './Section';
 
 interface DynamicFormProps {
   data: FormField[];
@@ -32,10 +33,9 @@ interface Error {
   isValid: boolean;
   message: string;
 }
-interface SectionProps {
-  title: string;
-  items: loanData[];
-  error: Error[];
+
+interface Sections {
+  [key: string]: loanData[];
 }
 
 export const DynamicForm = ({ data }: DynamicFormProps) => {
@@ -44,6 +44,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   );
   const LAN = JSON.parse(localStorage.getItem('LAN') as string);
   const loanData: loanData = JSON.parse(localStorage.getItem('loanData') as unknown as any);
+
   const [activeIndex, setActiveIndex] = useState<number>(
     lastModifiedIndex ? lastModifiedIndex : -1
   );
@@ -55,6 +56,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   const [error, setError] = useState<Error[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(LAN ? true : false);
+
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
@@ -63,15 +65,22 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       value: null
     };
   });
+
   const [formData, setFormData] = useState(activeConfigData);
+
+  const sections: Sections = formLoanData.reduce<Sections>((acc, item) => {
+    if (!acc[item.sectionName]) {
+      acc[item.sectionName] = [];
+    }
+    acc[item.sectionName].push(item);
+    return acc;
+  }, {});
 
   const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
-
     if (!currentData || !currentData.fields) {
       return true;
     }
-
     const result: boolean = currentData.fields.some((item, index) => {
       const fieldData = formLoanData.filter((fielditem) => {
         return item.key === fielditem.id;
@@ -192,18 +201,6 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       setFormData(activeConfigData);
     }
   }, [activeIndex, data]);
-
-  interface Sections {
-    [key: string]: loanData[];
-  }
-
-  const sections: Sections = formLoanData.reduce<Sections>((acc, item) => {
-    if (!acc[item.sectionName]) {
-      acc[item.sectionName] = [];
-    }
-    acc[item.sectionName].push(item);
-    return acc;
-  }, {});
 
   return (
     <DynamicFormWrapper>
@@ -362,35 +359,5 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         </>
       )}
     </DynamicFormWrapper>
-  );
-};
-
-const Section = ({ error, title, items }: SectionProps) => {
-  const isInvalidItem = (id: string) => {
-    const item = error?.find((invalidItem: Error) => invalidItem.id === id);
-    return item ? !item.isValid : false;
-  };
-
-  return (
-    <PreviewWrapper>
-      <h4>{toTitleCase(title) + ' Details'}</h4>
-      <div>
-        {items.map((item, index) => (
-          <>
-            <div className="field-value" key={item.id} style={{}}>
-              <div>{readableKeyString(item.id) + ' : '}</div>
-              <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>{item.value}</div>
-            </div>
-            {isInvalidItem(item.id) && (
-              <div
-                className="field-value"
-                style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit', fontSize: '8px' }}>
-                {error[index]?.message}
-              </div>
-            )}
-          </>
-        ))}
-      </div>
-    </PreviewWrapper>
   );
 };
