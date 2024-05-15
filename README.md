@@ -45,6 +45,8 @@ Submission screens :
 
 
 Mobile View : 
+
+
 <img width="556" alt="Screenshot 2024-05-15 at 3 02 23 PM" src="https://github.com/theprogrammedwords/multistep-form/assets/33520299/6f91cfba-b573-4d51-aa4e-e5338df47e4c">
 
 
