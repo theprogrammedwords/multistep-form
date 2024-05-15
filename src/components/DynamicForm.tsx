@@ -31,13 +31,21 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   });
   const [formData, setFormData] = useState(activeConfigData);
 
+
   const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
     if (!currentData || !currentData.fields) {
       return true;
     }
 
-    const result: boolean = currentData.fields.some((item, index) => item.mandatory && !formData?.[index]?.isFilled);
+   
+    const result: boolean = currentData.fields.some((item, index) => {
+        const fieldData = formLoanData.filter((fielditem)=> {
+            return item.key === fielditem.id
+        })
+
+       return item.mandatory && (!formData?.[index]?.isFilled && !fieldData[0]?.value)
+    });
     return result;
   };
 
@@ -48,9 +56,12 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
         const sectionFields = formLoanData?.filter((field) => field.sectionName === section.key);
         errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
     });
-    setActiveIndex(activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1);
+    const newActiveIndex = activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1;
+    
+    setActiveIndex(newActiveIndex);
+
     localStorage.setItem('loanData', JSON.stringify(formLoanData));
-    localStorage.setItem('lastModifiedIndex', JSON.stringify(activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1))
+    localStorage.setItem('lastModifiedIndex', JSON.stringify(newActiveIndex))
 };
 
 const handleFieldChange = (index: number, item: FormField, value: string) => {
