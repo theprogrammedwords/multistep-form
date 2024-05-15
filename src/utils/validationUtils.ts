@@ -74,3 +74,19 @@ export function debounce<T extends (...args: any[]) => any>(
     timeout = setTimeout(later, wait);
   };
 }
+
+export function toTitleCase(str: string) {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+export function readableKeyString(str: string) {
+  const result = str.split('_');
+  let data = '';
+  result.map((item, index) => {
+    data += toTitleCase(item) + ' ';
+  });
+
+  return data;
+}

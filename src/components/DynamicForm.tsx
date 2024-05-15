@@ -1,36 +1,60 @@
 import { FormField } from '../configs/formdata';
 import { useEffect, useState } from 'react';
 import { dataTypes } from '../configs/formdata';
-import { checkValues, debounce, getValueByKey } from '../utils/validationUtils';
-import { DynamicFormWrapper, FieldLabel, FieldWrapper, FormTitle, ButtonWrapper } from './DynamicFormStyles';
+import {
+  checkValues,
+  debounce,
+  getValueByKey,
+  readableKeyString,
+  toTitleCase
+} from '../utils/validationUtils';
+import {
+  DynamicFormWrapper,
+  FieldLabel,
+  FieldWrapper,
+  FormTitle,
+  ButtonWrapper,
+  PreviewWrapper
+} from './DynamicFormStyles';
 
 interface DynamicFormProps {
   data: FormField[];
 }
 
 export interface loanData {
-    sectionName : string,
-    id : string,
-    value : string
+  sectionName: string;
+  id: string;
+  value: string;
 }
 
+interface SectionProps {
+  title: string;
+  items: loanData[];
+}
 
 export const DynamicForm = ({ data }: DynamicFormProps) => {
-  const lastModifiedIndex : number = JSON.parse(localStorage.getItem('lastModifiedIndex') as unknown as any)
+  const lastModifiedIndex: number = JSON.parse(
+    localStorage.getItem('lastModifiedIndex') as unknown as any
+  );
   const loanData: loanData = JSON.parse(localStorage.getItem('loanData') as unknown as any);
-  const [activeIndex, setActiveIndex] = useState<number>(lastModifiedIndex ? lastModifiedIndex : -1);
-  const isLastStep = activeIndex === data.length -1;
-  const [formLoanData, setFormLoanData] = useState<loanData[]>(loanData ? loanData as unknown as any : []);
+  const [activeIndex, setActiveIndex] = useState<number>(
+    lastModifiedIndex ? lastModifiedIndex : -1
+  );
+  const [showPreview, setShowPreview] = useState<boolean>(false);
+  const isLastStep = activeIndex === data.length - 1;
+  const [formLoanData, setFormLoanData] = useState<loanData[]>(
+    loanData ? (loanData as unknown as any) : []
+  );
+  const [error, setError] = useState([])
   let activeConfigData = data[activeIndex]?.fields;
   activeConfigData = activeConfigData?.map((item, index) => {
     return {
       ...item,
       isFilled: false,
-      value: null,
+      value: null
     };
   });
   const [formData, setFormData] = useState(activeConfigData);
-
 
   const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
@@ -38,33 +62,38 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
       return true;
     }
 
-   
     const result: boolean = currentData.fields.some((item, index) => {
-        const fieldData = formLoanData.filter((fielditem)=> {
-            return item.key === fielditem.id
-        })
+      const fieldData = formLoanData.filter((fielditem) => {
+        return item.key === fielditem.id;
+      });
 
-       return item.mandatory && (!formData?.[index]?.isFilled && !fieldData[0]?.value)
+      return item.mandatory && !formData?.[index]?.isFilled && !fieldData[0]?.value;
     });
     return result;
   };
 
-
   const handleSave = () => {
-    const errors: any = [];
-    data?.forEach((section) => {
-        const sectionFields = formLoanData?.filter((field) => field.sectionName === section.key);
-        errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
-    });
     const newActiveIndex = activeIndex < data.length - 1 ? activeIndex + 1 : data.length - 1;
-    
+
     setActiveIndex(newActiveIndex);
 
     localStorage.setItem('loanData', JSON.stringify(formLoanData));
-    localStorage.setItem('lastModifiedIndex', JSON.stringify(newActiveIndex))
-};
+    localStorage.setItem('lastModifiedIndex', JSON.stringify(newActiveIndex));
 
-const handleFieldChange = (index: number, item: FormField, value: string) => {
+    if (isLastStep) {
+      setShowPreview(true);
+
+      const errors: any = [];
+      data?.forEach((section) => {
+        const sectionFields = formLoanData?.filter((field) => field.sectionName === section.key);
+        errors.push(...checkValues(section?.fields as unknown as any, sectionFields));
+      });
+      setError(errors);
+    }
+  };
+
+  console.log({error})
+  const handleFieldChange = (index: number, item: FormField, value: string) => {
     const updatedFormData = formData?.map((field, i) => {
       if (i === index) {
         return {
@@ -106,8 +135,6 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
     return false;
   };
 
-  
-
   useEffect(() => {
     if (activeIndex !== -1) {
       let activeConfigData = data[activeIndex]?.fields || [];
@@ -122,94 +149,139 @@ const handleFieldChange = (index: number, item: FormField, value: string) => {
     }
   }, [activeIndex, data]);
 
+  interface Sections {
+    [key: string]: loanData[];
+  }
+
+  const sections: Sections = formLoanData.reduce<Sections>((acc, item) => {
+    if (!acc[item.sectionName]) {
+      acc[item.sectionName] = [];
+    }
+    acc[item.sectionName].push(item);
+    return acc;
+  }, {});
 
   return (
     <DynamicFormWrapper>
-      {Object.entries(data).map(
-        ([metakey, sectionData], index) =>
-          Number(activeIndex) === index && (
-            <div key={metakey}>
-              <FormTitle>{sectionData.label}</FormTitle>
-              <div>
-                {sectionData.fields?.map((item, index) => {
-                  return (
-                    <FieldWrapper key={index}>
-                      <FieldLabel>
-                        {item.order}. {item.label}
-                        <span style={{ color: item.mandatory ? 'red' : 'gray' }}>
-                          {item.mandatory ? ' *' : '(Optional)'}
-                        </span>
-                      </FieldLabel> 
-                      {item.type === dataTypes.TEXTFIELD ? (
-                        <FieldLabel>
-                          <input value={getValueByKey(item.key, formLoanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></input>
-                        </FieldLabel>
-                      ) : item.type === dataTypes.TEXTAREA ? (
-                        <FieldLabel>
-                          <textarea value={getValueByKey(item.key, formLoanData) as unknown as string} onChange={(e)=> handleFieldChange(index, item, e.target.value)} placeholder={item.placeholder}></textarea>
-                        </FieldLabel>
-                      ) : null}
-                    </FieldWrapper>
-                  );
-                })}
-              </div>
-            </div>
-          )
-      )}
-
-      {(Number(activeIndex) < 0 || Number(activeIndex) >= data.length) && (
-        <FormTitle className="message">
-          Please complete the form for quick processing and disbursement of your loan
-        </FormTitle>
-      )}
-
-      <ButtonWrapper>
-        {activeIndex >= 0 && activeIndex < data.length ? (
-          <>
-            {' '}
-            {(
-              <button
-                disabled={isNavigationDisabled('prev')}
-                className="navigation"
-                onClick={() => setActiveIndex(activeIndex - 1)}>
-                {'<'}
-              </button>
-            )}
-            {(
-              <button disabled={isSaveDisabled()} onClick={()=> handleSave()} className="save">
-                {isLastStep ? 'Submit' : 'Save'}
-              </button>
-            )}
-            {isLastStep && (
-              <button className="reset" onClick={()=> {
-                    localStorage.clear();
-                    setFormLoanData([])
-                    setActiveIndex(-1)
+      {!showPreview && (
+        <>
+          {' '}
+          {Object.entries(data).map(
+            ([metakey, sectionData], index) =>
+              Number(activeIndex) === index && (
+                <div key={metakey}>
+                  <FormTitle>{sectionData.label}</FormTitle>
+                  <div>
+                    {sectionData.fields?.map((item, index) => {
+                      return (
+                        <FieldWrapper key={index}>
+                          <FieldLabel>
+                            {item.order}. {item.label}
+                            <span style={{ color: item.mandatory ? 'red' : 'gray' }}>
+                              {item.mandatory ? ' *' : '(Optional)'}
+                            </span>
+                          </FieldLabel>
+                          {item.type === dataTypes.TEXTFIELD ? (
+                            <FieldLabel>
+                              <input
+                                value={getValueByKey(item.key, formLoanData) as unknown as string}
+                                onChange={(e) => handleFieldChange(index, item, e.target.value)}
+                                placeholder={item.placeholder}></input>
+                            </FieldLabel>
+                          ) : item.type === dataTypes.TEXTAREA ? (
+                            <FieldLabel>
+                              <textarea
+                                value={getValueByKey(item.key, formLoanData) as unknown as string}
+                                onChange={(e) => handleFieldChange(index, item, e.target.value)}
+                                placeholder={item.placeholder}></textarea>
+                            </FieldLabel>
+                          ) : null}
+                        </FieldWrapper>
+                      );
+                    })}
+                  </div>
+                </div>
+              )
+          )}
+          {(Number(activeIndex) < 0 || Number(activeIndex) >= data.length) && (
+            <FormTitle className="message">
+              Please complete the form for quick processing and disbursement of your loan
+            </FormTitle>
+          )}
+          <ButtonWrapper>
+            {activeIndex >= 0 && activeIndex < data.length ? (
+              <>
+                {' '}
+                {
+                  <button
+                    disabled={isNavigationDisabled('prev')}
+                    className="navigation"
+                    onClick={() => setActiveIndex(activeIndex - 1)}>
+                    {'<'}
+                  </button>
                 }
-            }>
-                Reset Form
+                {
+                  <button disabled={isSaveDisabled()} onClick={() => handleSave()} className="save">
+                    {isLastStep ? 'Review' : 'Save'}
+                  </button>
+                }
+                {isLastStep && (
+                  <button
+                    className="reset"
+                    onClick={() => {
+                      localStorage.clear();
+                      setFormLoanData([]);
+                      setActiveIndex(-1);
+                    }}>
+                    Reset Form
+                  </button>
+                )}
+                {
+                  <button
+                    disabled={isNavigationDisabled('next')}
+                    className="navigation"
+                    onClick={() => setActiveIndex(activeIndex + 1)}>
+                    {'>'}
+                  </button>
+                }{' '}
+              </>
+            ) : (
+              <button
+                className="save"
+                onClick={() => {
+                  setActiveIndex(0);
+                  localStorage.clear();
+                }}>
+                {activeIndex < 0 ? 'Start' : 'Go back'}
               </button>
             )}
-            {(
-              <button
-                disabled={isNavigationDisabled('next')}
-                className="navigation"
-                onClick={() => setActiveIndex(activeIndex + 1)}>
-                {'>'}
-              </button>
-            )}{' '}
-          </>
-        ) : (
-          <button className="save" onClick={() => {
-                setActiveIndex(0);
-                localStorage.clear();
-            }
-          }>
-            {activeIndex < 0 ? 'Start' : 'Go back'}
-          </button>
-        )}
-      </ButtonWrapper>
+          </ButtonWrapper>
+        </>
+      )}
+      {showPreview && (
+        <>
+          {Object.keys(sections).map((sectionName) => (
+            <Section key={sectionName} title={sectionName} items={sections[sectionName]} />
+          ))}
+          <ButtonWrapper>
+            <button className="save">{'Submit'}</button>
+          </ButtonWrapper>
+        </>
+      )}
     </DynamicFormWrapper>
   );
 };
 
+const Section: React.FC<SectionProps> = ({ title, items }) => (
+  <PreviewWrapper>
+    <h4>{toTitleCase(title) + ' Details'}</h4>
+    <div>
+      {items.map((item) => (
+        <div className="field-value" key={item.id}>
+          <div>{readableKeyString(item.id) + ' : '}</div>
+          <div>{item.value}</div>
+        </div>
+      ))}
+    </div>
+  </PreviewWrapper>
+);

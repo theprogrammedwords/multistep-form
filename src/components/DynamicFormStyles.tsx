@@ -132,3 +132,25 @@ export const FieldWrapper = styled.div`
     font-family: ${(props) => props.theme.fonts[0]};
   }
 `;
+
+export const PreviewWrapper = styled.div`
+  display: flex;
+  color: ${({ theme: { colors } }) => colors.primary};
+  font-size: 12px;
+  text-align: left;
+  flex-direction: column;
+
+
+  .field-value {
+    display: flex;
+    margin: 2px;
+
+    div{
+        margin: 4px;
+        padding : 2px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin: 10px 14px;
+  }`
