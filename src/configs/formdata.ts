@@ -22,6 +22,7 @@ export interface Constraints {
   validations?: ValidationFunction[];
 }
 export interface Field {
+  id?: string | undefined;
   order: number;
   label: string;
   key: string;
@@ -33,6 +34,7 @@ export interface Field {
   value?: null | undefined | any;
   isFilled?: boolean;
   constraints?: Constraints;
+  message?: string;
 }
 
 export const sectionData: { [key: string]: SectionData } = {
@@ -72,6 +74,7 @@ export const formData: FormField[] = [
         type: dataTypes.TEXTFIELD,
         valuetype: 'text',
         placeholder: 'Fill in the name of applicant',
+        message: 'Must be minimum 4 and max 80 length',
         section: sectionData.PERSONAL.key,
         mandatory: true,
         constraints: {
@@ -91,6 +94,7 @@ export const formData: FormField[] = [
         type: dataTypes.TEXTAREA,
         valuetype: 'text',
         placeholder: 'Fill in the address of applicant',
+        message: 'Must be minimum 10 and max 80 length',
         section: sectionData.PERSONAL.key,
         mandatory: true,
         constraints: {
@@ -109,6 +113,7 @@ export const formData: FormField[] = [
         valuetype: 'text',
         key: sectionData.PERSONAL.key + '_EMAILID',
         placeholder: 'Fill in the email id of applicant',
+        message: 'Must be minimum 4 and max 80 length',
         type: dataTypes.TEXTFIELD,
         section: sectionData.PERSONAL.key,
         mandatory: true,
@@ -118,7 +123,12 @@ export const formData: FormField[] = [
           regex: '',
           validations: [
             (value) => validationFunctions.maxLength(value, 80),
-            (value) => validationFunctions.minLength(value, 4)
+            (value) => validationFunctions.minLength(value, 4),
+            (value) =>
+              validationFunctions.regexTest(
+                value,
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
+              )
           ]
         }
       }
@@ -136,6 +146,7 @@ export const formData: FormField[] = [
         type: dataTypes.TEXTFIELD,
         valuetype: 'text',
         section: sectionData.BUSINESS.key,
+        message: 'Must be minimum 4 and max 80 length',
         mandatory: true,
         constraints: {
           maxLength: 80,
@@ -152,6 +163,7 @@ export const formData: FormField[] = [
         label: 'Address',
         key: sectionData.BUSINESS.key + '_ADDRESS',
         placeholder: 'Fill in the address of business',
+        message: 'Must be minimum 10 and max 80 length',
         type: dataTypes.TEXTAREA,
         valuetype: 'text',
         section: sectionData.BUSINESS.key,
@@ -171,6 +183,7 @@ export const formData: FormField[] = [
         label: 'Email Id',
         key: sectionData.BUSINESS.key + '_EMAILID',
         placeholder: 'Fill in the email id of business',
+        message: 'Must be minimum 4 and max 80 length',
         type: dataTypes.TEXTFIELD,
         valuetype: 'text',
         section: sectionData.BUSINESS.key,
@@ -181,7 +194,12 @@ export const formData: FormField[] = [
           regex: '',
           validations: [
             (value) => validationFunctions.maxLength(value, 80),
-            (value) => validationFunctions.minLength(value, 4)
+            (value) => validationFunctions.minLength(value, 4),
+            (value) =>
+              validationFunctions.regexTest(
+                value,
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
+              )
           ]
         }
       }
@@ -196,6 +214,7 @@ export const formData: FormField[] = [
         label: 'Account No',
         key: sectionData.BANK.key + '_ACCOUNTNO',
         placeholder: 'Fill in the account number of bank',
+        message: 'Must be minimum 10 and max 13 length',
         type: dataTypes.TEXTFIELD,
         valuetype: 'number',
         section: sectionData.BANK.key,
@@ -215,6 +234,7 @@ export const formData: FormField[] = [
         label: 'Bank Name',
         key: sectionData.BANK.key + '_BANKNAME',
         placeholder: 'Fill in the name of bank',
+        message: 'Must be minimum 6 and max 20 length',
         valuetype: 'text',
         type: dataTypes.TEXTFIELD,
         section: sectionData.BANK.key,
@@ -224,7 +244,7 @@ export const formData: FormField[] = [
           minLength: 6,
           regex: '',
           validations: [
-            (value) => validationFunctions.maxLength(value, 40),
+            (value) => validationFunctions.maxLength(value, 20),
             (value) => validationFunctions.minLength(value, 6)
           ]
         }

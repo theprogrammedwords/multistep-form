@@ -1,15 +1,17 @@
 import { loanData } from '../components/DynamicForm';
+import { Field as FormField } from '../configs/formdata';
 
 export const validationFunctions = {
   isRequired: (value: string | null | undefined) =>
     value !== undefined && value !== null && value !== '',
   maxLength: (value: string | any[], maxLength: number) => value.length <= maxLength,
   minLength: (value: string | any[], minLength: number) => value.length >= minLength,
-  regex: (value: string, pattern: string | RegExp) => new RegExp(pattern).test(value)
+  regexTest: (value: string, pattern: string | RegExp) => new RegExp(pattern).test(value)
 };
 
 type Validation = (value: any) => boolean | string;
 interface Field {
+  message: string;
   id: string;
   key: string;
   constraints?: {
@@ -23,12 +25,13 @@ interface FormData {
 interface Error {
   id: string;
   isValid: boolean;
+  message: string;
 }
 
 export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
   const errors: Error[] = [];
 
-  fields?.forEach((field: Field) => {
+  fields?.forEach((field: Field, index: number) => {
     const formField = formData?.find((f) => f.id === field.key);
     if (formField) {
       field?.constraints?.validations?.forEach((validation) => {
@@ -36,7 +39,8 @@ export const checkValues = (fields: Field[], formData: FormData[]): Error[] => {
         if (validationResult !== true) {
           errors.push({
             id: formField.id,
-            isValid: validationResult as boolean
+            isValid: validationResult as boolean,
+            message: field?.message
           });
         }
       });
@@ -102,4 +106,14 @@ export const generateLoanId = () => {
   }
 
   return loanId;
+};
+
+export const validateField = (field: FormField, value: string) => {
+  const { validations } = field?.constraints as unknown as any;
+  for (let i = 0; i < validations.length; i++) {
+    if (!validations[i](value)) {
+      return false;
+    }
+  }
+  return true;
 };

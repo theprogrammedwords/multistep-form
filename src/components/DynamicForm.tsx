@@ -1,4 +1,4 @@
-import { FormField } from '../configs/formdata';
+import { Field, FormField } from '../configs/formdata';
 import { useEffect, useState } from 'react';
 import { dataTypes } from '../configs/formdata';
 import {
@@ -7,7 +7,8 @@ import {
   generateLoanId,
   getValueByKey,
   readableKeyString,
-  toTitleCase
+  toTitleCase,
+  validateField
 } from '../utils/validationUtils';
 import {
   DynamicFormWrapper,
@@ -31,6 +32,7 @@ export interface loanData {
 interface Error {
   id: string;
   isValid: boolean;
+  message: string;
 }
 interface SectionProps {
   title: string;
@@ -67,6 +69,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
 
   const isSaveDisabled = (): boolean => {
     const currentData: FormField | undefined = data[activeIndex];
+
     if (!currentData || !currentData.fields) {
       return true;
     }
@@ -102,7 +105,7 @@ export const DynamicForm = ({ data }: DynamicFormProps) => {
   };
 
   const handleFieldChange = (index: number, item: FormField, value: string) => {
-    const updatedFormData = formData?.map((field, i) => {
+    const updatedFormData = formData?.map((field: Field, i) => {
       if (i === index) {
         return {
           ...field,
@@ -374,11 +377,18 @@ const Section = ({ error, title, items }: SectionProps) => {
     <PreviewWrapper>
       <h4>{toTitleCase(title) + ' Details'}</h4>
       <div>
-        {items.map((item) => (
-          <div className="field-value" key={item.id} style={{}}>
-            <div>{readableKeyString(item.id) + ' : '}</div>
-            <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>{item.value}</div>
-          </div>
+        {items.map((item, index) => (
+          <>
+            <div className="field-value" key={item.id} style={{}}>
+              <div>{readableKeyString(item.id) + ' : '}</div>
+              <div style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit' }}>{item.value}</div>
+            </div>
+            <div
+              className="field-value"
+              style={{ color: isInvalidItem(item.id) ? 'red' : 'inherit', fontSize: '8px' }}>
+              {error[index]?.message}
+            </div>
+          </>
         ))}
       </div>
     </PreviewWrapper>
